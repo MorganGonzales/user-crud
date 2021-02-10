@@ -16,7 +16,7 @@
 
                             <div class="col-md-6">
                                 <select id="prefixname" class="form-control" @error('prefixname') is-invalid @enderror" name="prefixname" value="{{ old('prefixname') }}" autocomplete="prefixname" autofocus>
-                                    <option selected>Choose...</option>
+                                    <option value="" selected>Choose...</option>
                                     <option value="Mr">Mr</option>
                                     <option value="Mrs">Mrs</option>
                                     <option value="Ms">Ms</option>
