@@ -101,17 +101,17 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12 mb-3 input-group">
+                        <div class="col-md-12 mb-3">
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input @error('photo') is-invalid @enderror" id="photo" name="photo" value="{{ old('photo', $user->photo) }}">
                                 <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">{{ old('photo', $user->photo) }}</label>
-                            </div>
 
-                            @error('photo')
-                            <div class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+                                @error('photo')
+                                <div class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
                         </div>
                     </div>
                     <hr class="mb-4">

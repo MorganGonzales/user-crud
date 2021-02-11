@@ -45,6 +45,7 @@
                             @endforeach
                             </tbody>
                         </table>
+                        {!! $users->onEachSide(2)->links() !!}
                         @else
                             <h5 class="card-title">No deleted users</h5>
                             <a href="{{ route('users.index') }}" class="btn btn-primary btn-sm">Go back to User List</a>

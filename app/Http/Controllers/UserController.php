@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use App\Services\UserServiceInterface;
 
 class UserController extends Controller
 {
+    /**
+     * @var UserServiceInterface
+     */
+    protected $userService;
+
+    public function __construct(UserServiceInterface $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
-        $users = User::withoutTrashed()->latest()->get();
+        $users = $this->userService->list();
 
         return view('users.index', compact('users'));
     }
@@ -22,20 +30,18 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function store(StoreUserRequest $request)
+    public function store(UserRequest $request)
     {
         $userData = $request->all();
 
-        if ($request->hasFile('photo')) {
-            $imageName = $request->username . '.' . $request->photo->extension();
-            $userData['photo'] = Storage::url($request->file('photo')->storeAs('avatars', $imageName, 'public'));
-        }
+        $userData['photo'] = $request->hasFile('photo') ? $this->userService->upload($request->file('photo')) : '';
+        $userData['password'] = $this->userService->hash($request->password);
 
-        $userData['password'] = Hash::make($request->password);
+        $flashResult = $this->userService->store($userData)
+            ? ['success' => 'User created successfully.']
+            : ['error' => 'User creation failed.'];
 
-        User::create($userData);
-
-        return redirect()->route('users.index')->with('success', 'User added successfully.');
+        return redirect()->route('users.index')->with($flashResult);
     }
 
     public function show(User $user)
@@ -48,47 +54,49 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UserRequest $request, int $id)
     {
         $userData = $request->all();
+        $userData['photo'] = $request->hasFile('photo') ? $this->userService->upload($request->file('photo')) : '';
 
-        if ($request->hasFile('photo')) {
-            $imageName = $request->username . '.' . $request->photo->extension();
-            $userData['photo'] = Storage::url($request->file('photo')->storeAs('avatars', $imageName, 'public'));
-        }
+        $flashResult = $this->userService->update($id, $userData)
+            ? ['success' => 'User updated successfully.']
+            : ['error' => 'User update failed.'];
 
-        $user->update($userData);
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('users.index')->with($flashResult);
     }
 
     public function destroy(int $id)
     {
-        $user = User::withTrashed()->findOrFail($id);
-        $user->forceDelete();
+        $flashResult = $this->userService->destroy($id)
+            ? ['success' => 'User permanently deleted successfully.']
+            : ['error' => 'User permanently deletion failed.'];
 
-        return redirect()->route('users.trashed')->with('success', 'User permanently deleted successfully.');
+        return redirect()->route('users.trashed')->with($flashResult);
     }
 
     public function trashed()
     {
-        $users = User::onlyTrashed()->latest()->get();
+        $users = $this->userService->listTrashed();
 
         return view('users.trashed', compact('users'));
     }
 
-    public function delete(User $user)
+    public function delete(int $id)
     {
-        $user->delete();
+        $flashResult = $this->userService->delete($id)
+            ? ['success' => 'User temporarily deleted successfully.']
+            : ['error' => 'User temporarily deletion failed.'];
 
-        return redirect()->route('users.index')->with('success', 'User temporarily deleted successfully.');
+        return redirect()->route('users.index')->with($flashResult);
     }
 
     public function restore(int $id)
     {
-        $user = User::withTrashed()->findOrFail($id);
-        $user->restore();
+        $flashResult = $this->userService->restore($id)
+            ? ['success' => 'User restored successfully.']
+            : ['error' => 'User restoration failed.'];
 
-        return redirect()->route('users.trashed')->with('success', 'User restored successfully.');
+        return redirect()->route('users.trashed')->with($flashResult);
     }
 }

@@ -46,6 +46,8 @@
                             @endforeach
                             </tbody>
                         </table>
+
+                        {!! $users->onEachSide(2)->links() !!}
                     </div>
                 </div>
             </div>
