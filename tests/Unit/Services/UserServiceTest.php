@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Models\Detail;
 use App\Models\User;
 use App\Services\UserServiceInterface;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserServiceTest extends TestCase
@@ -16,6 +18,7 @@ class UserServiceTest extends TestCase
     use DatabaseMigrations, RefreshDatabase, WithFaker;
 
     const USERS_TABLE = 'users';
+    const DETAILS_TABLE = 'details';
 
     /**
      * @var UserServiceInterface
@@ -196,5 +199,32 @@ class UserServiceTest extends TestCase
 
         // Assertions
         $this->assertEquals("/storage/avatars/{$fileName}", $storagePath);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_can_store_details_of_a_user_to_database()
+    {
+        // Arrangements
+        $user = User::factory()->make();
+
+        $details = [
+            ['key' => 'Full name', 'value' => $user->fullname, 'type' => 'bio', 'user_id' => $user->id],
+            ['key' => 'Middle Initial', 'value' => $user->middleinitial, 'type' => 'bio', 'user_id' => $user->id],
+            ['key' => 'Avatar', 'value' => asset($user->photo), 'type' => 'bio', 'user_id' => $user->id],
+            ['key' => 'Gender', 'value' => $user->gender, 'type' => 'bio', 'user_id' => $user->id],
+        ];
+
+        // Actions
+        $this->service->saveDetails($user, $details);
+
+        // Assertions
+        $this->assertDatabaseHas(self::DETAILS_TABLE, ['key' => 'Full name', 'value' => $user->fullname]);
+        $this->assertDatabaseHas(self::DETAILS_TABLE, ['key' => 'Middle Initial', 'value' => $user->middleinitial]);
+        $this->assertDatabaseHas(self::DETAILS_TABLE, ['key' => 'Avatar', 'value' => asset($user->photo)]);
+        $this->assertDatabaseHas(self::DETAILS_TABLE, ['key' => 'Gender', 'value' => $user->gender]);
+        $this->assertDatabaseCount(self::DETAILS_TABLE, 4);
     }
 }

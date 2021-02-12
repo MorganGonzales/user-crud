@@ -1,16 +1,17 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models;
 
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
-class UsersTableTest extends TestCase
+class UserTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations, RefreshDatabase;
 
-    const USERS_TABLE = 'users';
+    const TABLE = 'users';
 
     /**
      * @test
@@ -37,7 +38,7 @@ class UsersTableTest extends TestCase
             'deleted_at',
         ];
 
-        $this->assertTrue(Schema::hasColumns(self::USERS_TABLE, $columns));
-        $this->assertEquals($columns, Schema::getColumnListing(self::USERS_TABLE));
+        $this->assertTrue(Schema::hasColumns(self::TABLE, $columns));
+        $this->assertEquals($columns, Schema::getColumnListing(self::TABLE));
     }
 }

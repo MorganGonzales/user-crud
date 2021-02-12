@@ -5,8 +5,9 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">{{ __('User List (Active)') }} <a class="btn btn-primary btn-sm float-right"
-                                                                      href="{{ route('users.create') }}"><i
+                    <div class="card-header">{{ __('User List (Active)') }} <a
+                            class="btn btn-primary btn-sm float-right"
+                            href="{{ route('users.create') }}"><i
                                 class="fas fa-user-plus"></i> Add User</a></div>
 
                     <div class="card-body">

@@ -12,9 +12,7 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label for="prefixname">{{ __('Prefix') }} <span class="text-muted">{{  __('(Optional)') }}</span></label>
-                            @php
-                            $prefixOptions = ['Mr', 'Mrs', 'Ms'];
-                            @endphp
+                            @php $prefixOptions = ['Mr.', 'Mrs.', 'Ms.']; @endphp
                             <select class="custom-select d-block w-100" id="prefixname" name="prefixname" value="{{ old('prefixname', $user->prefixname) }}">
                                 <option value="">Choose...</option>
 

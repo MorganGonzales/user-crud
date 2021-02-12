@@ -13,15 +13,9 @@ use Illuminate\Validation\Rule;
 
 class UserService implements UserServiceInterface
 {
-    /**
-     * @var User
-     */
-    protected $model;
+    protected User $model;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     public function __construct(User $model, Request $request)
     {
@@ -66,9 +60,6 @@ class UserService implements UserServiceInterface
         return $user->update($attributes);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function delete(int $id): ?bool
     {
         return $this->find($id)->delete();
@@ -79,12 +70,12 @@ class UserService implements UserServiceInterface
         return $this->model->onlyTrashed()->latest('deleted_at')->paginate(5);
     }
 
-    public function restore($id): ?bool
+    public function restore(int $id): ?bool
     {
         return $this->find($id)->restore();
     }
 
-    public function destroy($id): ?bool
+    public function destroy(int $id): ?bool
     {
         return $this->find($id)->forceDelete();
     }
@@ -97,5 +88,10 @@ class UserService implements UserServiceInterface
     public function upload(UploadedFile $file): ?string
     {
         return Storage::url($file->storeAs('avatars', $file->getClientOriginalName(), 'public'));
+    }
+
+    public function saveDetails(User $user, array $details): int
+    {
+        return $user->details()->upsert($details, ['key', 'user_id']);
     }
 }
