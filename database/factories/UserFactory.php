@@ -23,8 +23,11 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'prefixname' => ['Mr.', 'Mrs.', 'Ms.'][rand(0, 2)],
             'firstname' => $this->faker->firstName,
+            'middlename' => $this->faker->lastName,
             'lastname' => $this->faker->lastName,
+            'suffixname' => $this->faker->suffix,
             'username' => $this->faker->userName,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),

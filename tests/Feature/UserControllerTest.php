@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
@@ -103,7 +102,8 @@ class UserControllerTest extends TestCase
             ->actingAs($user)
             ->get(route('users.show', $user->id))
             ->assertStatus(200)
-            ->assertSee('Squidward Tentacles')
+            ->assertSee('Squidward')
+            ->assertSee('Tentacles')
             ->assertSee('Handsome')
         ;
     }

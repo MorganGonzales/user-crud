@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Events\UserSaved;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -49,6 +51,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $dispatchesEvents = [
+        'saved' => UserSaved::class,
+    ];
+
+    private static array $genderPrefixMap = [
+        'Mr.' => 'Male',
+        'Mrs.' => 'Female',
+        'Ms.' => 'Female',
+    ];
+
+    public function details(): HasMany
+    {
+        return $this->hasMany(Detail::class);
+    }
+
     public function getAvatarAttribute()
     {
         return $this->photo;
@@ -58,7 +75,7 @@ class User extends Authenticatable
     {
         $data = [
             $this->firstname,
-            $this->middlename,
+            $this->middleinitial,
             $this->lastname,
             $this->suffixname,
         ];
@@ -68,6 +85,11 @@ class User extends Authenticatable
 
     public function getMiddleinitialAttribute(): string
     {
-        return strtoupper($this->middlename[0]) . '.';
+        return $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
+    }
+
+    public function getGenderAttribute(): string
+    {
+        return self::$genderPrefixMap[$this->prefixname] ?? '';
     }
 }

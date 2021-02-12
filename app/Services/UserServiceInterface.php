@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -22,17 +23,13 @@ interface UserServiceInterface
 
     public function listTrashed(): LengthAwarePaginator;
 
-    public function restore($id): ?bool;
+    public function restore(int $id): ?bool;
 
-    public function destroy($id): ?bool;
+    public function destroy(int $id): ?bool;
 
-    /**
-     * Generate random hash key.
-     *
-     * @param  string $key
-     * @return string
-     */
     public function hash(string $key): string;
 
     public function upload(UploadedFile $file): ?string;
+
+    public function saveDetails(User $user, array $details): int;
 }

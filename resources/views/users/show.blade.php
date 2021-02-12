@@ -11,10 +11,12 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $user->fullname }} </h5>
-                            <p class="card-text">User Name: {{ $user->username }}</p>
-                            <p class="card-text">Email Address: {{ $user->email }}</p>
-                            <p class="card-text"><small class="text-muted">Last updated {{$user->updated_at->diffForHumans() }}</small></p>
+                            <h5 class="card-title">{{ $user->username }} </h5>
+                            <div class="cart-text">
+                                @foreach($user->details as $detail)
+                                    <p>{{ $detail->key }}: {{ $detail->value }}</p>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

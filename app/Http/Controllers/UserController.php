@@ -8,10 +8,7 @@ use App\Services\UserServiceInterface;
 
 class UserController extends Controller
 {
-    /**
-     * @var UserServiceInterface
-     */
-    protected $userService;
+    protected UserServiceInterface $userService;
 
     public function __construct(UserServiceInterface $userService)
     {
