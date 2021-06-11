@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services;
 
-use App\Models\Detail;
 use App\Models\User;
 use App\Services\UserServiceInterface;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -10,7 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserServiceTest extends TestCase
