@@ -23,7 +23,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'prefixname' => ['Mr.', 'Mrs.', 'Ms.'][rand(0, 2)],
+            'prefixname' => collect(User::GENDER_PREFIX_MAP)->keys()->random(),
             'firstname' => $this->faker->firstName,
             'middlename' => $this->faker->lastName,
             'lastname' => $this->faker->lastName,

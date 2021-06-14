@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Events\UserSaved;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,22 +13,28 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
+    public const GENDER_PREFIX_MAP = [
+        'Mr.' => 'Male',
+        'Mrs.' => 'Female',
+        'Ms.' => 'Female',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'prefixname',
-        'firstname',
-        'middlename',
-        'lastname',
-        'suffixname',
-        'username',
         'email',
+        'firstname',
+        'lastname',
+        'middlename',
         'password',
         'photo',
+        'prefixname',
+        'suffixname',
         'type',
+        'username',
     ];
 
     /**
@@ -55,32 +60,19 @@ class User extends Authenticatable
         'saved' => UserSaved::class,
     ];
 
-    private static array $genderPrefixMap = [
-        'Mr.' => 'Male',
-        'Mrs.' => 'Female',
-        'Ms.' => 'Female',
-    ];
-
     public function details(): HasMany
     {
         return $this->hasMany(Detail::class);
     }
 
-    public function getAvatarAttribute()
-    {
-        return $this->photo;
-    }
-
     public function getFullnameAttribute(): string
     {
-        $data = [
+        return collect([
             $this->firstname,
             $this->middleinitial,
             $this->lastname,
             $this->suffixname,
-        ];
-
-        return implode(' ', \array_filter($data));
+        ])->filter()->join(' ');
     }
 
     public function getMiddleinitialAttribute(): string
@@ -90,6 +82,6 @@ class User extends Authenticatable
 
     public function getGenderAttribute(): string
     {
-        return self::$genderPrefixMap[$this->prefixname] ?? '';
+        return self::GENDER_PREFIX_MAP[$this->prefixname] ?? '';
     }
 }
